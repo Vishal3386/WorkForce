@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkForce Pro — Expense & Workforce Management</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════ LOGIN SCREEN ═══════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">💼</div>
+    <div class="login-title">WorkForce Pro</div>
+    <div class="login-sub">Expense & Workforce Management</div>
+    <div class="form-group" style="text-align:left">
+      <label>Mobile Number</label>
+      <input id="login-phone" type="text" placeholder="Enter mobile number" value="9876543210">
+    </div>
+    <div class="form-group" style="margin-top:10px;text-align:left">
+      <label>PIN</label>
+      <input id="login-pin" type="password" placeholder="Enter PIN" value="1234">
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text2);text-align:left">Login as:</div>
+    <div class="login-roles">
+      <div class="role-btn" onclick="loginAs('admin')">
+        <div class="role-icon">👑</div>
+        <div class="role-name">Admin</div>
+        <div class="role-desc">Full control</div>
+      </div>
+      <div class="role-btn" onclick="loginAs('manager')">
+        <div class="role-icon">🧑‍💼</div>
+        <div class="role-name">Manager</div>
+        <div class="role-desc">Team view</div>
+      </div>
+      <div class="role-btn" onclick="loginAs('senior')">
+        <div class="role-icon">👷</div>
+        <div class="role-name">Senior Staff</div>
+        <div class="role-desc">Assign tasks</div>
+      </div>
+      <div class="role-btn" onclick="loginAs('staff')">
+        <div class="role-icon">🙋</div>
+        <div class="role-name">Staff</div>
+        <div class="role-desc">Attendance &amp; tasks</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ MAIN APP ═══════════════════════ -->
+<div id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">💼</div>
+      <div>
+        <div class="logo-text">WorkForce Pro</div>
+        <div class="logo-sub" id="role-label">Admin Panel</div>
+      </div>
+    </div>
+
+    <div style="position:relative">
+      <div class="biz-selector" onclick="toggleBizDropdown()">
+        <div class="biz-dot"></div>
+        <div class="biz-name" id="active-biz">Sharma Constructions</div>
+        <div class="biz-arrow">▼</div>
+      </div>
+      <div class="biz-dropdown" id="biz-dropdown">
+        <div class="biz-opt" onclick="switchBiz('Sharma Constructions')"><div class="biz-opt-dot" style="background:#388BFD"></div>Sharma Constructions</div>
+        <div class="biz-opt" onclick="switchBiz('SK Security Services')"><div class="biz-opt-dot" style="background:#3FB950"></div>SK Security Services</div>
+        <div class="biz-opt" onclick="switchBiz('CleanMate Housekeeping')"><div class="biz-opt-dot" style="background:#A371F7"></div>CleanMate Housekeeping</div>
+        <div class="biz-opt" onclick="switchBiz('+ Add Business')" style="border-top:1px solid var(--border);color:var(--orange)"><div class="biz-opt-dot" style="background:var(--orange)"></div>+ Add Business</div>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <div class="nav-item active" data-page="dashboard" onclick="navigate(this)"><span class="icon">🏠</span>Dashboard</div>
+      <div class="nav-item" data-page="notifications" onclick="navigate(this)"><span class="icon">🔔</span>Notifications<span class="nav-badge" id="nb-notif">5</span></div>
+    </div>
+
+    <div class="nav-section" id="nav-workforce">
+      <div class="nav-label">Workforce</div>
+      <div class="nav-item" id="nav-employees" data-page="employees" onclick="navigate(this)"><span class="icon">👥</span>Employees</div>
+      <div class="nav-item" data-page="attendance" onclick="navigate(this)"><span class="icon">📋</span>Attendance</div>
+      <div class="nav-item" data-page="leaves" onclick="navigate(this)"><span class="icon">🏖️</span>Leave Management<span class="nav-badge" id="nb-leaves">3</span></div>
+      <div class="nav-item" id="nav-payroll" data-page="payroll" onclick="navigate(this)"><span class="icon">💰</span>Payroll</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Operations</div>
+      <div class="nav-item" data-page="sites" onclick="navigate(this)"><span class="icon">🏗️</span>Sites & Projects</div>
+      <div class="nav-item" data-page="tasks" onclick="navigate(this)"><span class="icon">✅</span>Tasks</div>
+      <div class="nav-item" data-page="onduty" onclick="navigate(this)"><span class="icon">🚗</span>On-Duty</div>
+      <div class="nav-item" onclick="openModal('modal-daily-report')"><span class="icon">📋</span>Daily Report</div>
+      <div class="nav-item" onclick="openModal('modal-add-loss')"><span class="icon">⚠️</span>Log Loss</div>
+    </div>
+
+    <div class="nav-section" id="nav-finance">
+      <div class="nav-label">Finance</div>
+      <div class="nav-item" id="nav-wallet" data-page="wallet" onclick="navigate(this)"><span class="icon">👛</span>Wallet</div>
+      <div class="nav-item" data-page="expenses" onclick="navigate(this)"><span class="icon">💸</span>Expenses</div>
+      <div class="nav-item" data-page="banking" onclick="navigate(this)"><span class="icon">🏦</span>Banking</div>
+      <div class="nav-item" data-page="assets" onclick="navigate(this)"><span class="icon">📦</span>Assets & Reimburse</div>
+    </div>
+
+    <div class="nav-section" id="nav-docs-section">
+      <div class="nav-label">Documents</div>
+      <div class="nav-item" data-page="documents" onclick="navigate(this)"><span class="icon">📁</span>Site Documents</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Reports</div>
+      <div class="nav-item" data-page="reports" onclick="navigate(this)"><span class="icon">📊</span>Reports</div>
+    </div>
+
+    <div class="nav-section" id="nav-inventory-section">
+      <div class="nav-label">Inventory</div>
+      <div class="nav-item" data-page="inventory" onclick="navigate(this)"><span class="icon">🏭</span>Inventory & Materials</div>
+    </div>
+
+    <div class="nav-section" id="nav-revenue-section">
+      <div class="nav-label">Revenue</div>
+      <div class="nav-item" data-page="revenue" onclick="navigate(this)"><span class="icon">📈</span>Revenue & Partners</div>
+    </div>
+
+    <div class="nav-section" id="nav-settings">
+      <div class="nav-label">System</div>
+      <div class="nav-item" data-page="settings" onclick="navigate(this)"><span class="icon">⚙️</span>Settings</div>
+    </div>
+
+    <div style="padding:12px;margin-top:auto;border-top:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="avatar" style="width:30px;height:30px;font-size:12px" id="sidebar-av">A</div>
+        <div>
+          <div style="font-size:12px;font-weight:700" id="sidebar-user">Rajesh Sharma</div>
+          <div style="font-size:10px;color:var(--text2)" id="sidebar-role-tag">Admin</div>
+        </div>
+        <div style="margin-left:auto;cursor:pointer;color:var(--text2);font-size:14px" onclick="logout()" title="Logout">🚪</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div id="topbar">
+      <div id="page-title">Dashboard</div>
+      <input class="topbar-search" placeholder="🔍  Search...">
+      <div class="icon-btn" onclick="openNotifPanel()" title="Notifications">🔔<div class="notif-dot"></div></div>
+      <div class="icon-btn" title="Add New" onclick="openQuickAdd()">➕</div>
+      <div class="icon-btn" title="Emergency" onclick="openModal('modal-emergency')" style="background:var(--red-dim);border-color:var(--red);color:var(--red)">🚨</div>
+      <div class="avatar" id="top-av">A</div>
+    </div>
+
+    <div id="content">
+
+      <!-- ══════════ DASHBOARD ══════════ -->
+      <div class="page active" id="page-dashboard">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Dashboard</span></div>
+        <div class="page-header">
+          <div>
+            <h2 id="dash-greeting">Good Morning, Rajesh 👋</h2>
+            <p id="dash-biz-label">Sharma Constructions — Today's Overview</p>
+          </div>
+          <div style="display:flex;gap:8px" id="dash-admin-btns">
+            <button class="btn btn-ghost btn-sm" onclick="navigate(document.querySelector('[data-page=reports]'))">📊 Reports</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-employee')">+ Add Employee</button>
+          </div>
+        </div>
+        <div class="stats-grid" id="dash-stats"></div>
+        <div class="grid-2" style="gap:16px" id="dash-bottom"></div>
+      </div>
+
+      <!-- ══════════ EMPLOYEES ══════════ -->
+      <!-- ══════════ EMPLOYEES LIST ══════════ -->
+      <div class="page" id="page-employees">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Employees</span></div>
+        <div class="page-header">
+          <div><h2>Employees</h2><p id="emp-subtitle">Manage all employees</p></div>
+          <button class="btn btn-primary" id="btn-add-employee" onclick="openModal('modal-add-employee')">+ Add Employee</button>
+        </div>
+        <div class="search-row" id="emp-search-row">
+          <input class="search-inp" id="emp-search" oninput="filterEmployees()" placeholder="🔍 Search by name, phone, role...">
+          <select class="filter-sel" id="emp-filter-dept" onchange="filterEmployees()">
+            <option value="">All Departments</option>
+            <option>Security</option><option>Construction</option><option>Housekeeping</option><option>Admin</option>
+          </select>
+          <select class="filter-sel" id="emp-filter-status" onchange="filterEmployees()">
+            <option value="">All Status</option><option>Active</option><option>Inactive</option>
+          </select>
+        </div>
+        <div class="grid-auto" id="emp-grid"></div>
+      </div>
+
+      <!-- ══════════ EMPLOYEE DETAIL ══════════ -->
+      <div class="page" id="page-empdetail">
+        <div class="breadcrumb">
+          <span onclick="navigate(document.querySelector('[data-page=employees]'))" style="cursor:pointer;color:var(--blue)">Employees</span>
+          <span class="sep">/</span><span class="current" id="empd-breadcrumb">Employee Detail</span>
+        </div>
+        <div class="page-header">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div id="empd-avatar" style="width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:22px;font-weight:800;color:#fff;background:#388BFD;flex-shrink:0">A</div>
+            <div>
+              <h2 id="empd-name">Employee Name</h2>
+              <p id="empd-role-dept" style="color:var(--text2)">Role · Department</p>
+            </div>
+            <span id="empd-status-badge" class="badge badge-green" style="margin-left:8px">Active</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="toggleEmpStatus()">🔄 Toggle Active</button>
+            <button class="btn btn-ghost btn-sm" onclick="openEditEmp()">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteEmp()">🗑️ Delete</button>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid" id="empd-stats" style="margin-bottom:16px"></div>
+
+        <!-- Detail Tabs -->
+        <div class="tabs" id="empd-tabs">
+          <button class="tab-btn active" onclick="switchTab('empd-tabs','empd-tab-profile',this)">👤 Profile</button>
+          <button class="tab-btn" onclick="switchTab('empd-tabs','empd-tab-history',this)">📋 Live History</button>
+          <button class="tab-btn" onclick="switchTab('empd-tabs','empd-tab-tasks',this)">✅ Tasks</button>
+          <button class="tab-btn" onclick="switchTab('empd-tabs','empd-tab-payroll',this)">💰 Payroll History</button>
+          <button class="tab-btn" onclick="switchTab('empd-tabs','empd-tab-attendance',this)">📅 Attendance</button>
+        </div>
+
+        <div class="tab-pane active" id="empd-tab-profile">
+          <div class="grid-2" style="gap:16px">
+            <div class="card">
+              <div class="card-title">Personal Information</div>
+              <div id="empd-personal-info"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">Employment Details</div>
+              <div id="empd-employ-info"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="empd-tab-history">
+          <div class="card">
+            <div class="card-title">⚡ Live Activity History</div>
+            <div id="empd-history-list"></div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="empd-tab-tasks">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div class="card-title" style="margin:0">Assigned Tasks</div>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-task')">+ Assign Task</button>
+            </div>
+            <div id="empd-tasks-list"></div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="empd-tab-payroll">
+          <div class="card">
+            <div class="card-title">Payroll History</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Month</th><th>Basic</th><th>HRA</th><th>Allow.</th><th>Deductions</th><th>Net Pay</th><th>Status</th><th>Slip</th></tr></thead>
+              <tbody id="empd-payroll-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="empd-tab-attendance">
+          <div class="card">
+            <div class="card-title">Attendance Calendar</div>
+            <div id="empd-cal-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div style="font-weight:700">June 2025</div>
+              <div style="display:flex;gap:6px">
+                <span class="chip" style="background:var(--green-dim);color:var(--green)">● Present</span>
+                <span class="chip" style="background:var(--red-dim);color:var(--red)">● Absent</span>
+                <span class="chip" style="background:var(--orange-dim);color:var(--orange)">● Leave</span>
+                <span class="chip" style="background:var(--purple-dim);color:var(--purple)">● Holiday</span>
+              </div>
+            </div>
+            <div id="empd-calendar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ ATTENDANCE ══════════ -->
+      <div class="page" id="page-attendance">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Attendance</span></div>
+        <div class="page-header">
+          <div><h2>📋 Attendance</h2><p id="att-subtitle">QR-based check-in / check-out</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" id="btn-manual-att" onclick="openModal('modal-manual-attendance')">✏️ Manual Override</button>
+            <button class="btn btn-primary" id="btn-gen-qr" onclick="openModal('modal-qr-generator')">📲 Generate QR</button>
+          </div>
+        </div>
+
+        <!-- ── MY ATTENDANCE CARD (all roles see this) ── -->
+        <div id="my-attendance-card" style="margin-bottom:16px">
+          <div class="card" style="border:2px solid var(--blue);background:var(--blue-dim)">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div style="display:flex;align-items:center;gap:14px">
+                <div id="att-my-avatar" style="width:52px;height:52px;border-radius:50%;background:var(--blue2);display:grid;place-items:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0">A</div>
+                <div>
+                  <div id="att-my-name" style="font-size:16px;font-weight:800">My Attendance</div>
+                  <div id="att-my-site" style="font-size:12px;color:var(--text2)">Site A – MG Road</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                    <span id="att-my-status-badge" class="badge badge-gray">Not Checked In</span>
+                    <span id="att-live-counter" style="font-size:12px;color:var(--green);font-weight:700;display:none">⏱ <span id="att-counter-val">0:00:00</span></span>
+                  </div>
+                </div>
+              </div>
+              <!-- Clock -->
+              <div style="text-align:center">
+                <div class="clock-time" id="live-clock" style="font-size:32px">--:--:--</div>
+                <div id="live-date" style="font-size:11px;color:var(--text2)">Loading...</div>
+              </div>
+              <!-- Check-in / Check-out buttons – ALL ROLES -->
+              <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+                <button id="btn-checkin" class="btn btn-success" style="min-width:160px;padding:12px 20px;font-size:14px" onclick="doCheckIn()">
+                  ✅ Check In
+                </button>
+                <button id="btn-checkout" class="btn btn-danger" style="min-width:160px;padding:12px 20px;font-size:14px;display:none" onclick="doCheckOut()">
+                  🚪 Check Out
+                </button>
+                <button id="btn-qr-scan" class="btn btn-primary btn-sm" onclick="openModal('modal-qr-generator')" style="min-width:160px">
+                  📲 Scan QR Code
+                </button>
+              </div>
+            </div>
+            <!-- Today's time detail -->
+            <div style="margin-top:14px;display:flex;gap:20px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--border)">
+              <div><div style="font-size:11px;color:var(--text2)">Check In Time</div><div id="att-checkin-time" style="font-size:16px;font-weight:700;color:var(--green)">—</div></div>
+              <div><div style="font-size:11px;color:var(--text2)">Check Out Time</div><div id="att-checkout-time" style="font-size:16px;font-weight:700;color:var(--red)">—</div></div>
+              <div><div style="font-size:11px;color:var(--text2)">Total Hours</div><div id="att-total-hours" style="font-size:16px;font-weight:700;color:var(--blue)">—</div></div>
+              <div><div style="font-size:11px;color:var(--text2)">Date</div><div id="att-today-date" style="font-size:16px;font-weight:700">—</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TEAM ATTENDANCE (Admin / Manager / Senior visible) ── -->
+        <div id="team-attendance-section">
+          <div class="stats-grid" style="margin-bottom:12px">
+            <div class="stat-card stat-green" style="padding:10px"><div class="stat-label">Present</div><div class="stat-value" style="color:var(--green);font-size:22px">41</div></div>
+            <div class="stat-card stat-red"   style="padding:10px"><div class="stat-label">Absent</div><div class="stat-value" style="color:var(--red);font-size:22px">3</div></div>
+            <div class="stat-card stat-orange"style="padding:10px"><div class="stat-label">On Leave</div><div class="stat-value" style="color:var(--orange);font-size:22px">4</div></div>
+            <div class="stat-card stat-cyan"  style="padding:10px"><div class="stat-label">Week-Off</div><div class="stat-value" style="color:var(--cyan);font-size:22px">2</div></div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="att-table-title">Team Attendance — Today</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Employee</th><th>Department</th><th>Site</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th><th id="att-action-col">Actions</th></tr></thead>
+              <tbody id="attendance-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ LEAVES ══════════ -->
+      <div class="page" id="page-leaves">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Leave Management</span></div>
+        <div class="page-header">
+          <div><h2>Leave Management</h2><p>Review and manage leave requests</p></div>
+          <button class="btn btn-primary" onclick="openModal('modal-add-leave')">+ Apply Leave</button>
+        </div>
+        <div class="tabs" id="leave-tabs">
+          <button class="tab-btn active" onclick="switchTab('leave-tabs','tab-pending',this)">Pending (3)</button>
+          <button class="tab-btn" onclick="switchTab('leave-tabs','tab-approved',this)">Approved</button>
+          <button class="tab-btn" onclick="switchTab('leave-tabs','tab-rejected',this)">Rejected</button>
+          <button class="tab-btn" onclick="switchTab('leave-tabs','tab-balance',this)">Leave Balance</button>
+        </div>
+        <div class="tab-pane active" id="tab-pending">
+          <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Leave Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th id="leave-action-col">Actions</th></tr></thead><tbody id="leave-pending-table"></tbody></table></div>
+        </div>
+        <div class="tab-pane" id="tab-approved">
+          <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Leave Type</th><th>From</th><th>To</th><th>Days</th><th>Approved By</th><th>Status</th></tr></thead><tbody id="leave-approved-table"></tbody></table></div>
+        </div>
+        <div class="tab-pane" id="tab-rejected">
+          <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Leave Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th></tr></thead><tbody id="leave-rejected-table"></tbody></table></div>
+        </div>
+        <div class="tab-pane" id="tab-balance">
+          <div class="table-wrap"><table><thead><tr><th>Employee</th><th>CL Used/Total</th><th>SL Used/Total</th><th>PL Used/Total</th><th>LOP</th><th>Balance</th></tr></thead><tbody id="leave-balance-table"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ══════════ PAYROLL ══════════ -->
+      <div class="page" id="page-payroll">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Payroll</span></div>
+        <div class="page-header">
+          <div><h2>Payroll</h2><p id="payroll-subtitle">June 2025 payroll</p></div>
+          <div style="display:flex;gap:8px" id="payroll-admin-btns">
+            <button class="btn btn-ghost btn-sm" onclick="showToast('Payroll exported!','success')">📥 Export</button>
+            <button class="btn btn-primary" onclick="openModal('modal-process-payroll')">⚙️ Process Payroll</button>
+          </div>
+        </div>
+        <div id="payroll-body"></div>
+      </div>
+
+      <!-- ══════════ SITES ══════════ -->
+      <div class="page" id="page-sites">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Sites & Projects</span></div>
+        <div class="page-header">
+          <div><h2>Sites & Projects</h2><p id="sites-subtitle">Monitor all active work sites</p></div>
+          <button class="btn btn-primary" id="btn-add-site" onclick="openModal('modal-add-site')">+ Add Site</button>
+        </div>
+        <div class="grid-auto" id="sites-grid"></div>
+      </div>
+
+      <!-- ══════════ SITE DASHBOARD ══════════ -->
+      <div class="page" id="page-sitedash">
+        <div class="breadcrumb">
+          <span onclick="navigate(document.querySelector('[data-page=sites]'))" style="cursor:pointer;color:var(--blue)">Sites</span>
+          <span class="sep">/</span><span class="current" id="sitedash-name">Site A</span>
+        </div>
+        <div class="page-header">
+          <div>
+            <h2 id="sitedash-title">Site A – MG Road</h2>
+            <p id="sitedash-addr">📍 MG Road, Pune</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="sitedash-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-upload-doc')">📁 Upload Doc</button>
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-task')">+ Task</button>
+            <button class="btn btn-warning btn-sm" id="sitedash-edit-btn" onclick="openEditSite()">✏️ Edit Site</button>
+            <button class="btn btn-danger btn-sm" id="sitedash-delete-btn" onclick="deleteSite()">🗑️ Delete</button>
+          </div>
+        </div>
+
+        <!-- Site Info Strip -->
+        <div class="card" style="margin-bottom:16px;background:var(--bg3)">
+          <div style="display:flex;gap:20px;flex-wrap:wrap">
+            <div><div style="font-size:11px;color:var(--text3)">Type</div><div id="sd-info-type" style="font-size:13px;font-weight:700">Residential</div></div>
+            <div><div style="font-size:11px;color:var(--text3)">Ownership</div><div id="sd-info-own" style="font-size:13px;font-weight:700">Personal</div></div>
+            <div><div style="font-size:11px;color:var(--text3)">Est. Cost</div><div id="sd-info-cost" style="font-size:13px;font-weight:700;color:var(--orange)">₹5.0Cr</div></div>
+            <div><div style="font-size:11px;color:var(--text3)">Manager</div><div id="sd-info-mgr" style="font-size:13px;font-weight:700">Amit Kumar</div></div>
+            <div><div style="font-size:11px;color:var(--text3)">GPS</div><div id="sd-info-gps" style="font-size:13px;font-weight:700;color:var(--blue)">18.5204, 73.8567</div></div>
+          </div>
+        </div>
+
+        <div class="stats-grid" id="sitedash-stats"></div>
+
+        <!-- Site Tabs -->
+        <div class="tabs" id="sitedash-tabs" style="margin-top:16px">
+          <button class="tab-btn active" onclick="switchTab('sitedash-tabs','sd-tab-overview',this)">📊 Overview</button>
+          <button class="tab-btn" onclick="switchTab('sitedash-tabs','sd-tab-dailyreports',this)">📝 Daily Reports</button>
+          <button class="tab-btn" onclick="switchTab('sitedash-tabs','sd-tab-losslog',this)">⚠️ Loss Log</button>
+          <button class="tab-btn" onclick="switchTab('sitedash-tabs','sd-tab-docs',this)">📁 Documents</button>
+          <button class="tab-btn" onclick="switchTab('sitedash-tabs','sd-tab-reports',this)">📈 Reports</button>
+        </div>
+
+        <!-- OVERVIEW TAB -->
+        <div class="tab-pane active" id="sd-tab-overview">
+          <div class="grid-2" style="gap:16px;margin-top:4px">
+            <div class="card">
+              <div class="card-title">👥 Assigned Employees</div>
+              <div id="sitedash-emp-list"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">📊 Site Progress</div>
+              <div id="sitedash-progress"></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:16px">
+            <div class="card-title">✅ Site Tasks</div>
+            <div id="sitedash-tasks"></div>
+          </div>
+        </div>
+
+        <!-- DAILY REPORTS TAB (Site-specific) -->
+        <div class="tab-pane" id="sd-tab-dailyreports">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px">
+            <div style="font-size:13px;color:var(--text2)" id="sd-dr-count">All reports for this site</div>
+            <div style="display:flex;gap:8px">
+              <select class="filter-sel" id="sd-dr-sort" onchange="renderSiteDailyReports()">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="progress">By Progress</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-daily-report')">+ Add Report</button>
+            </div>
+          </div>
+          <div id="sd-daily-reports-list"></div>
+        </div>
+
+        <!-- LOSS LOG TAB (Site-specific) -->
+        <div class="tab-pane" id="sd-tab-losslog">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px">
+            <div style="font-size:13px;color:var(--text2)">Loss entries for this site</div>
+            <button class="btn btn-danger btn-sm" onclick="openModal('modal-add-loss')">+ Log Loss</button>
+          </div>
+          <div id="sd-loss-log-list"></div>
+        </div>
+
+        <!-- DOCUMENTS TAB -->
+        <div class="tab-pane" id="sd-tab-docs">
+          <div style="display:flex;justify-content:flex-end;margin:8px 0 12px">
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-upload-doc')">+ Upload Document</button>
+          </div>
+          <div id="sitedash-docs"></div>
+        </div>
+
+        <!-- REPORTS TAB (site-specific) -->
+        <div class="tab-pane" id="sd-tab-reports">
+          <div class="grid-auto" style="margin-top:8px" id="sitedash-reports"></div>
+        </div>
+      </div>
+
+      <!-- ══════════ TASKS ══════════ -->
+      <div class="page" id="page-tasks">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Tasks</span></div>
+        <div class="page-header">
+          <div><h2>Task Management</h2><p>Assign and track tasks</p></div>
+          <button class="btn btn-primary" id="btn-add-task" onclick="openModal('modal-add-task')">+ Assign Task</button>
+        </div>
+        <div class="stats-grid" style="margin-bottom:14px" id="task-stats"></div>
+        <div class="grid-auto" id="tasks-grid"></div>
+      </div>
+
+      <!-- ══════════ ON-DUTY ══════════ -->
+      <div class="page" id="page-onduty">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">On-Duty</span></div>
+        <div class="page-header">
+          <div><h2>On-Duty Management</h2><p>Field work and external duty requests</p></div>
+          <button class="btn btn-primary" onclick="openModal('modal-add-onduty')">+ Add On-Duty</button>
+        </div>
+        <div class="card"><div class="card-title">On-Duty Requests</div>
+          <div class="table-wrap"><table><thead><tr><th>Employee</th><th>From</th><th>To</th><th>Days</th><th>Location</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead><tbody id="onduty-table"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ══════════ WALLET (ADMIN ONLY) ══════════ -->
+      <div class="page" id="page-wallet">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Wallet</span></div>
+        <div class="page-header">
+          <div><h2>💛 Company Wallet</h2><p>Fund allocation, balances, and expense tracking per person</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-transaction')">🏦 Bank Entry</button>
+            <button class="btn btn-primary" onclick="openModal('modal-give-fund')">💵 Allocate Fund</button>
+          </div>
+        </div>
+        <div class="stats-grid" style="margin-bottom:16px">
+          <div class="stat-card stat-blue"><div class="stat-icon">💰</div><div class="stat-label">Total Wallet</div><div class="stat-value" style="color:var(--blue);font-size:22px">₹5.0L</div><div class="stat-sub">Company total funds</div></div>
+          <div class="stat-card stat-red"><div class="stat-icon">💸</div><div class="stat-label">Total Spent</div><div class="stat-value" style="color:var(--red);font-size:22px">₹1.8L</div><div class="stat-sub">All disbursements</div></div>
+          <div class="stat-card stat-green"><div class="stat-icon">💳</div><div class="stat-label">Total Balance</div><div class="stat-value" style="color:var(--green);font-size:22px">₹3.2L</div><div class="stat-sub">Remaining funds</div></div>
+          <div class="stat-card stat-orange"><div class="stat-icon">📋</div><div class="stat-label">Bills Uploaded</div><div class="stat-value" style="color:var(--orange);font-size:22px">34</div><div class="stat-sub">This month</div></div>
+        </div>
+
+        <!-- Per-person wallet cards -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">👤 Staff Wallet Balances</div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Staff Member</th><th>Role</th><th>Total Allocated</th><th>Total Spent</th><th>Balance</th><th>Last Transaction</th><th>Bills</th><th>Actions</th></tr></thead>
+            <tbody id="wallet-staff-table"></tbody>
+          </table></div>
+        </div>
+
+        <!-- Wallet transaction ledger -->
+        <div class="card">
+          <div class="card-title">📒 Wallet Ledger — All Transactions</div>
+          <div class="search-row">
+            <input class="search-inp" placeholder="🔍 Search transactions...">
+            <select class="filter-sel"><option>All Staff</option><option>Amit Kumar</option><option>Suresh Patel</option><option>Deepak Singh</option></select>
+            <select class="filter-sel"><option>All Types</option><option>Fund Allocated</option><option>Expense</option><option>Purchase</option></select>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Date</th><th>Staff</th><th>Type</th><th>Category</th><th>Amount</th><th>Mode</th><th>Bill</th><th>Balance After</th><th>Actions</th></tr></thead>
+            <tbody id="wallet-ledger-table"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- ══════════ EXPENSES ══════════ -->
+      <div class="page" id="page-expenses">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Expenses</span></div>
+        <div class="page-header">
+          <div><h2>💸 Expense Tracking</h2><p id="expense-subtitle">Daily KPI · All money in and out</p></div>
+          <div style="display:flex;gap:8px" id="expense-admin-btns">
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-give-fund')">💵 Give Fund</button>
+            <button class="btn btn-primary" onclick="openModal('modal-add-expense')">+ Add Expense</button>
+          </div>
+        </div>
+
+        <!-- KPI CARDS (top expenses today) -->
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">📊 Today's Expense KPI</div>
+          <div class="stats-grid" id="expense-kpi-cards"></div>
+        </div>
+
+        <!-- Summary strip -->
+        <div class="stats-grid" style="margin-bottom:14px" id="expense-summary-stats"></div>
+
+        <!-- Expense Ledger -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div class="card-title" style="margin:0">Expense Ledger</div>
+            <div style="display:flex;gap:8px">
+              <select class="filter-sel" id="exp-sort" onchange="renderExpenses()">
+                <option value="newest">Newest First</option>
+                <option value="highest">Highest Amount</option>
+                <option value="lowest">Lowest Amount</option>
+              </select>
+            </div>
+          </div>
+          <div class="search-row">
+            <input class="search-inp" id="exp-search" oninput="renderExpenses()" placeholder="🔍 Search expenses...">
+            <select class="filter-sel" id="exp-cat" onchange="renderExpenses()"><option value="">All Categories</option><option>Salary</option><option>Materials</option><option>Transport</option><option>Fuel</option><option>Food</option><option>Tools</option><option>Other</option></select>
+            <select class="filter-sel" id="exp-site-filter" onchange="renderExpenses()"><option value="">All Sites</option><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Site C – Hinjewadi</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Date</th><th>Given To</th><th>Category</th><th>Amount</th><th>Site</th><th>Mode</th><th>Bill</th><th>Balance</th><th>Actions</th></tr></thead><tbody id="expense-table"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ══════════ BANKING ══════════ -->
+      <div class="page" id="page-banking">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Banking</span></div>
+        <div class="page-header">
+          <div><h2>Banking & Transactions</h2><p>Manage all bank accounts and money flow</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-bank')">🏦 Add Bank</button>
+            <button class="btn btn-primary" onclick="openModal('modal-add-transaction')">+ Transaction</button>
+          </div>
+        </div>
+        <div class="grid-3" style="margin-bottom:16px" id="bank-cards"></div>
+        <div class="card"><div class="card-title">Transaction History</div>
+          <div class="table-wrap"><table><thead><tr><th>Date</th><th>Bank</th><th>Type</th><th>Party</th><th>Amount</th><th>Mode</th><th>Reference</th><th>Cheque Date</th><th>Proof</th></tr></thead><tbody id="transaction-table"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ══════════ ASSETS ══════════ -->
+      <div class="page" id="page-assets">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Assets & Reimbursement</span></div>
+        <div class="page-header">
+          <div><h2>Assets & Reimbursement</h2><p>Company assets and reimbursements</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-reimburse')">💰 Reimbursement</button>
+            <button class="btn btn-primary" onclick="openModal('modal-add-asset')">+ Add Asset</button>
+          </div>
+        </div>
+        <div class="tabs" id="asset-tabs">
+          <button class="tab-btn active" onclick="switchTab('asset-tabs','tab-assets',this)">Company Assets</button>
+          <button class="tab-btn" onclick="switchTab('asset-tabs','tab-reimb',this)">Reimbursements</button>
+        </div>
+        <div class="tab-pane active" id="tab-assets">
+          <div class="table-wrap"><table><thead><tr><th>Asset</th><th>Category</th><th>Purchase Date</th><th>Value</th><th>Assigned To</th><th>Site</th><th>Status</th><th>Bill</th><th>Actions</th></tr></thead><tbody id="asset-table"></tbody></table></div>
+        </div>
+        <div class="tab-pane" id="tab-reimb">
+          <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Item</th><th>Amount</th><th>Date</th><th>Bill</th><th>Status</th><th>Actions</th></tr></thead><tbody id="reimb-table"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ══════════ DOCUMENTS (ADMIN) ══════════ -->
+      <div class="page" id="page-documents">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Site Documents</span></div>
+        <div class="page-header">
+          <div><h2>📁 Site Documents & Agreements</h2><p>Upload and manage all site-related documents</p></div>
+          <button class="btn btn-primary" onclick="openModal('modal-upload-doc')">+ Upload Document</button>
+        </div>
+        <div class="search-row">
+          <input class="search-inp" placeholder="🔍 Search documents...">
+          <select class="filter-sel" id="doc-filter-site"><option value="">All Sites</option><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Site C – Hinjewadi</option><option>Site D – Kothrud</option><option>Site E – Baner</option></select>
+          <select class="filter-sel"><option>All Types</option><option>Contract</option><option>Agreement</option><option>Permit</option><option>Drawing</option><option>Invoice</option><option>Other</option></select>
+        </div>
+        <div class="grid-auto" id="docs-grid"></div>
+      </div>
+
+      <!-- ══════════ NOTIFICATIONS ══════════ -->
+      <div class="page" id="page-notifications">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Notifications</span></div>
+        <div class="page-header">
+          <div><h2>Notifications</h2><p>All system alerts and announcements</p></div>
+          <button class="btn btn-primary" onclick="openModal('modal-announce')">📢 Announcement</button>
+        </div>
+        <div class="card" id="notif-list"></div>
+      </div>
+
+      <!-- ══════════ REPORTS ══════════ -->
+      <div class="page" id="page-reports">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Reports</span></div>
+        <div class="page-header">
+          <div><h2>📊 Reports Module</h2><p id="reports-subtitle">All records consolidated in one place</p></div>
+          <div style="display:flex;gap:8px" id="reports-header-actions">
+            <button class="btn btn-ghost btn-sm" onclick="applyTheme('light')">☀️ Light</button>
+            <button class="btn btn-ghost btn-sm" onclick="applyTheme('dark')">🌙 Dark</button>
+            <button class="btn btn-ghost btn-sm" onclick="applyTheme('construction')">🏗️ Theme</button>
+          </div>
+        </div>
+
+        <!-- Main tabs – role aware -->
+        <div class="tabs" id="report-main-tabs">
+          <button class="tab-btn active" onclick="switchTab('report-main-tabs','rtab-consolidated',this)" id="rtab-btn-consol">📋 Consolidated</button>
+          <button class="tab-btn" onclick="switchTab('report-main-tabs','rtab-daily',this)">📝 Daily Reports</button>
+          <button class="tab-btn" onclick="switchTab('report-main-tabs','rtab-loss',this)" id="rtab-btn-loss">⚠️ Loss Log</button>
+          <button class="tab-btn" onclick="switchTab('report-main-tabs','rtab-generate',this)" id="rtab-btn-generate">📈 Generate Reports</button>
+        </div>
+
+        <!-- TAB: CONSOLIDATED (Admin / Manager) -->
+        <div class="tab-pane active" id="rtab-consolidated">
+          <div id="admin-consolidated">
+            <div class="card" style="border-left:3px solid var(--blue)">
+              <div class="card-title">👑 All Records</div>
+              <div class="tabs" id="consol-tabs">
+                <button class="tab-btn active" onclick="switchTab('consol-tabs','ctab-checkin',this)">Check-In/Out</button>
+                <button class="tab-btn" onclick="switchTab('consol-tabs','ctab-tasks',this)">Task Progress</button>
+                <button class="tab-btn" onclick="switchTab('consol-tabs','ctab-daily-inner',this)">Daily Reports</button>
+                <button class="tab-btn" onclick="switchTab('consol-tabs','ctab-expenses',this)">Expenses</button>
+              </div>
+              <div class="tab-pane active" id="ctab-checkin">
+                <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Role</th><th>Site</th><th>Date</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead>
+                  <tbody id="consol-checkin-table"></tbody></table></div>
+              </div>
+              <div class="tab-pane" id="ctab-tasks">
+                <div class="table-wrap"><table><thead><tr><th>Task</th><th>Assigned To</th><th>Site</th><th>Due</th><th>Progress</th><th>Status</th><th>Last Update</th></tr></thead>
+                  <tbody id="consol-tasks-table"></tbody></table></div>
+              </div>
+              <div class="tab-pane" id="ctab-daily-inner">
+                <div id="daily-reports-list"></div>
+              </div>
+              <div class="tab-pane" id="ctab-expenses">
+                <div class="table-wrap"><table><thead><tr><th>Date</th><th>Staff</th><th>Category</th><th>Amount</th><th>Site</th><th>Mode</th><th>Bill</th></tr></thead>
+                  <tbody id="consol-expense-table"></tbody></table></div>
+              </div>
+            </div>
+          </div>
+          <!-- Staff / Senior – no consolidated access -->
+          <div id="no-consolidated" style="display:none">
+            <div class="card" style="text-align:center;padding:32px">
+              <div style="font-size:36px;margin-bottom:10px">🔒</div>
+              <div style="font-weight:700;font-size:14px;margin-bottom:6px">Access Restricted</div>
+              <div style="font-size:13px;color:var(--text2)">Consolidated records are visible to Admin and Managers only.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: DAILY REPORTS – role-filtered sortable page -->
+        <div class="tab-pane" id="rtab-daily">
+          <div class="page-header" style="margin-bottom:12px">
+            <div></div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-daily-report')">+ Add Report</button>
+          </div>
+          <div class="search-row">
+            <input class="search-inp" id="dr-search" oninput="filterDailyReports()" placeholder="🔍 Search reports...">
+            <select class="filter-sel" id="dr-filter-site" onchange="filterDailyReports()">
+              <option value="">All Sites</option>
+              <option>Site A – MG Road</option><option>Site B – Wakad</option>
+              <option>Site C – Hinjewadi</option><option>Site D – Kothrud</option>
+            </select>
+            <select class="filter-sel" id="dr-filter-month" onchange="filterDailyReports()">
+              <option value="">All Months</option>
+              <option value="06">June 2025</option><option value="05">May 2025</option>
+              <option value="04">April 2025</option>
+            </select>
+            <select class="filter-sel" id="dr-sort" onchange="filterDailyReports()">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="site">By Site</option>
+              <option value="progress">By Progress %</option>
+            </select>
+          </div>
+          <div id="daily-reports-page"></div>
+        </div>
+
+        <!-- TAB: LOSS LOG -->
+        <div class="tab-pane" id="rtab-loss">
+          <div class="page-header" style="margin-bottom:12px">
+            <div></div>
+            <button class="btn btn-danger btn-sm" onclick="openModal('modal-add-loss')">+ Log Loss</button>
+          </div>
+          <div class="search-row">
+            <input class="search-inp" placeholder="🔍 Search losses...">
+            <select class="filter-sel"><option>All Sites</option><option>Site A – MG Road</option><option>Site B – Wakad</option></select>
+            <select class="filter-sel"><option>All Types</option><option>Structural</option><option>Material</option><option>Theft</option></select>
+          </div>
+          <div class="grid-auto" id="loss-log-grid"></div>
+        </div>
+
+        <!-- TAB: GENERATE REPORTS (Admin/Manager only) -->
+        <div class="tab-pane" id="rtab-generate">
+          <div id="generate-reports-section">
+            <div class="grid-auto" id="reports-grid"></div>
+          </div>
+          <div id="no-generate" style="display:none">
+            <div class="card" style="text-align:center;padding:32px">
+              <div style="font-size:36px;margin-bottom:10px">🔒</div>
+              <div style="font-weight:700;font-size:14px">Not Available</div>
+              <div style="font-size:13px;color:var(--text2);margin-top:6px">Report generation is available to Admin and Managers only.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══════════ SETTINGS (FULL) ══════════ -->
+      <div class="page" id="page-settings">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Settings</span></div>
+        <div class="page-header"><div><h2>⚙️ Settings</h2><p>Personalization, security, backup & recovery</p></div></div>
+
+        <div class="tabs" id="settings-tabs">
+          <button class="tab-btn active" onclick="switchTab('settings-tabs','stab-theme',this)">🎨 Theme</button>
+          <button class="tab-btn" onclick="switchTab('settings-tabs','stab-wallpaper',this)">🖼️ Wallpaper</button>
+          <button class="tab-btn" onclick="switchTab('settings-tabs','stab-profile',this)">👤 Profile</button>
+          <button class="tab-btn" onclick="switchTab('settings-tabs','stab-perms',this)">🔐 Permissions</button>
+          <button class="tab-btn" onclick="switchTab('settings-tabs','stab-leave',this)">📅 Leave Policy</button>
+          <button class="tab-btn" onclick="switchTab('settings-tabs','stab-notif',this)">🔔 Notifications</button>
+          <button class="tab-btn" onclick="switchTab('settings-tabs','stab-backup',this)">💾 Backup</button>
+        </div>
+
+        <!-- THEME TAB -->
+        <div class="tab-pane active" id="stab-theme">
+          <div class="card" style="max-width:640px">
+            <div class="card-title">🎨 Theme Selection</div>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Select a theme — changes apply instantly across the entire app.</p>
+            <div class="grid-3" id="theme-options" style="gap:12px">
+              <div class="theme-card active-theme" id="theme-dark" onclick="applyTheme('dark')" style="background:var(--bg3);border:2px solid var(--blue);border-radius:var(--radius);padding:16px;cursor:pointer;text-align:center">
+                <div style="font-size:28px;margin-bottom:8px">🌙</div>
+                <div style="font-weight:700;font-size:13px">Dark Mode</div>
+                <div style="font-size:11px;color:var(--text2)">Default dark theme</div>
+                <div style="margin-top:8px;display:flex;gap:4px;justify-content:center">
+                  <div style="width:16px;height:16px;border-radius:50%;background:#0D1117"></div>
+                  <div style="width:16px;height:16px;border-radius:50%;background:#161B22"></div>
+                  <div style="width:16px;height:16px;border-radius:50%;background:#388BFD"></div>
+                </div>
+                <div id="theme-dark-check" style="margin-top:8px;color:var(--blue);font-size:12px;font-weight:700">✓ Active</div>
+              </div>
+              <div class="theme-card" id="theme-light" onclick="applyTheme('light')" style="background:#F5F7FA;border:2px solid #E0E0E0;border-radius:var(--radius);padding:16px;cursor:pointer;text-align:center">
+                <div style="font-size:28px;margin-bottom:8px">☀️</div>
+                <div style="font-weight:700;font-size:13px;color:#1A1A1A">Light Mode</div>
+                <div style="font-size:11px;color:#666">Clean white theme</div>
+                <div style="margin-top:8px;display:flex;gap:4px;justify-content:center">
+                  <div style="width:16px;height:16px;border-radius:50%;background:#FFFFFF;border:1px solid #ddd"></div>
+                  <div style="width:16px;height:16px;border-radius:50%;background:#F5F7FA;border:1px solid #ddd"></div>
+                  <div style="width:16px;height:16px;border-radius:50%;background:#1F6FEB"></div>
+                </div>
+                <div id="theme-light-check" style="margin-top:8px;font-size:12px;font-weight:700;color:transparent">✓ Active</div>
+              </div>
+              <div class="theme-card" id="theme-construction" onclick="applyTheme('construction')" style="background:#1A1200;border:2px solid #4A3800;border-radius:var(--radius);padding:16px;cursor:pointer;text-align:center">
+                <div style="font-size:28px;margin-bottom:8px">🏗️</div>
+                <div style="font-weight:700;font-size:13px;color:#F0883E">Construction Theme</div>
+                <div style="font-size:11px;color:#8B7355">Industrial orange</div>
+                <div style="margin-top:8px;display:flex;gap:4px;justify-content:center">
+                  <div style="width:16px;height:16px;border-radius:50%;background:#1A1200"></div>
+                  <div style="width:16px;height:16px;border-radius:50%;background:#2A2000"></div>
+                  <div style="width:16px;height:16px;border-radius:50%;background:#F0883E"></div>
+                </div>
+                <div id="theme-construction-check" style="margin-top:8px;font-size:12px;font-weight:700;color:transparent">✓ Active</div>
+              </div>
+            </div>
+            <div id="theme-preview" style="margin-top:16px;padding:14px;border-radius:var(--radius);background:var(--bg3);border:1px solid var(--border)">
+              <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Preview</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <div class="stat-card stat-blue" style="flex:1;min-width:100px;padding:10px"><div class="stat-label">Employees</div><div class="stat-value" style="color:var(--blue);font-size:18px">48</div></div>
+                <div class="stat-card stat-green" style="flex:1;min-width:100px;padding:10px"><div class="stat-label">Present</div><div class="stat-value" style="color:var(--green);font-size:18px">41</div></div>
+                <div class="stat-card stat-orange" style="flex:1;min-width:100px;padding:10px"><div class="stat-label">Leave</div><div class="stat-value" style="color:var(--orange);font-size:18px">4</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WALLPAPER TAB -->
+        <div class="tab-pane" id="stab-wallpaper">
+          <div class="grid-2" style="gap:16px;max-width:720px">
+            <div class="card">
+              <div class="card-title">🖼️ Login Screen Wallpaper</div>
+              <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Shown on the login/splash screen. Auto-adjusted to screen size.</p>
+              <div id="login-wp-preview" style="width:100%;height:140px;border-radius:var(--radius);background:linear-gradient(135deg,#0D1117,#1B3A6B);display:flex;align-items:center;justify-content:center;margin-bottom:12px;position:relative;overflow:hidden;border:1px solid var(--border)">
+                <div style="text-align:center;z-index:1"><div style="font-size:32px">💼</div><div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:4px">WorkForce Pro</div></div>
+                <div id="login-wp-overlay" style="position:absolute;inset:0;display:none"></div>
+              </div>
+              <div class="upload-area" onclick="uploadWallpaper('login')">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Upload Login Wallpaper (JPG / PNG)</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">Recommended: 1080×1920 or 1920×1080</div>
+              </div>
+              <button class="btn btn-danger btn-sm" style="margin-top:10px" onclick="clearWallpaper('login')">🗑️ Remove Wallpaper</button>
+            </div>
+            <div class="card">
+              <div class="card-title">🌄 App Background Wallpaper</div>
+              <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Shown as main app background. System auto-adjusts fonts and card opacity.</p>
+              <div id="bg-wp-preview" style="width:100%;height:140px;border-radius:var(--radius);background:var(--bg);display:flex;align-items:center;justify-content:center;margin-bottom:12px;border:1px solid var(--border);position:relative;overflow:hidden">
+                <div class="card" style="width:80%;text-align:center;padding:10px"><div style="font-size:12px;font-weight:700">Sample Card</div><div style="font-size:11px;color:var(--text2)">Cards float above wallpaper</div></div>
+                <div id="bg-wp-overlay" style="position:absolute;inset:0;z-index:-1;display:none"></div>
+              </div>
+              <div class="upload-area" onclick="uploadWallpaper('bg')">
+                <div class="upload-icon">🌆</div>
+                <div class="upload-text">Upload Background Wallpaper (JPG / PNG)</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">System adds overlay for readability</div>
+              </div>
+              <button class="btn btn-danger btn-sm" style="margin-top:10px" onclick="clearWallpaper('bg')">🗑️ Remove Wallpaper</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFILE TAB -->
+        <div class="tab-pane" id="stab-profile">
+          <div class="card" style="max-width:480px">
+            <div class="card-title">👤 Profile & Company</div>
+            <div class="form-grid" style="grid-template-columns:1fr">
+              <div class="form-group"><label>Company Name</label><input value="Sharma Constructions"></div>
+              <div class="form-group"><label>Admin Name</label><input id="settings-name" value="Rajesh Sharma"></div>
+              <div class="form-group"><label>Mobile</label><input value="+91 98765 43210"></div>
+              <div class="form-group"><label>GSTIN</label><input value="27AAPCS1234F1ZV"></div>
+              <div class="form-group"><label>City</label><input value="Pune"></div>
+              <button class="btn btn-primary btn-sm" style="margin-top:4px" onclick="saveSettings()">Save Profile</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERMISSIONS TAB -->
+        <div class="tab-pane" id="stab-perms">
+          <div class="card">
+            <div class="card-title">🔐 Role Permissions</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Module</th><th>Manager</th><th>Senior</th><th>Staff</th></tr></thead>
+              <tbody>
+                <tr><td>View All Employees</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                <tr><td>View Others Payroll</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                <tr><td>View Others Attendance</td><td><input type="checkbox" checked></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                <tr><td>Leave Approve</td><td><input type="checkbox" checked></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                <tr><td>Task Assign</td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td></tr>
+                <tr><td>Expense Entry</td><td><input type="checkbox" checked></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                <tr><td>View Reports</td><td><input type="checkbox" checked></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                <tr><td>Wallet Access</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+                <tr><td>Inventory Entry</td><td><input type="checkbox" checked></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+              </tbody>
+            </table></div>
+            <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="showToast('Permissions saved!','success')">Save Permissions</button>
+          </div>
+        </div>
+
+        <!-- LEAVE POLICY TAB -->
+        <div class="tab-pane" id="stab-leave">
+          <div class="card" style="max-width:480px">
+            <div class="card-title">📅 Leave Policy</div>
+            <div class="form-grid" style="grid-template-columns:1fr 1fr">
+              <div class="form-group"><label>Casual Leave (CL)</label><input type="number" value="12"></div>
+              <div class="form-group"><label>Sick Leave (SL)</label><input type="number" value="12"></div>
+              <div class="form-group"><label>Privilege Leave (PL)</label><input type="number" value="15"></div>
+              <div class="form-group"><label>Carry Forward</label><select><option>Yes</option><option>No</option></select></div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="showToast('Leave policy saved!','success')">Save Policy</button>
+          </div>
+        </div>
+
+        <!-- NOTIFICATIONS TAB -->
+        <div class="tab-pane" id="stab-notif">
+          <div class="card" style="max-width:480px">
+            <div class="card-title">🔔 Notification Settings</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Leave requests to Manager</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Cheque due date alerts</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Site understaffed alerts</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Reimbursement requests</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox"> Daily work report digest</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Inventory low stock alerts</label>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" checked> Partner payment reminders</label>
+            </div>
+            <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="showToast('Notification settings saved!','success')">Save Settings</button>
+          </div>
+        </div>
+
+        <!-- BACKUP TAB -->
+        <div class="tab-pane" id="stab-backup">
+          <div class="grid-2" style="gap:16px;max-width:720px">
+            <div class="card">
+              <div class="card-title">💾 Backup Data</div>
+              <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Creates a complete JSON backup of all app data: sites, staff, assets, inventory, reports, financials.</p>
+              <div class="form-group" style="margin-bottom:12px">
+                <label>Backup Email</label>
+                <input id="backup-email" type="email" placeholder="admin@company.com" value="rajesh@sharma.com">
+              </div>
+              <div id="backup-checklist" style="margin-bottom:14px">
+                <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px">What gets backed up:</div>
+                ${["Sites & Projects","All Employees","Attendance Records","Payroll Data","Expenses & Wallet","Assets & Inventory","Documents","Reports"].map(item => `<div style="display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:4px"><span style="color:var(--green)">✓</span>${item}</div>`).join("")}
+              </div>
+              <div id="backup-progress" style="display:none;margin-bottom:12px">
+                <div style="font-size:12px;color:var(--text2);margin-bottom:6px" id="backup-status-text">Preparing backup...</div>
+                <div class="progress-bar"><div class="progress-fill" id="backup-progress-bar" style="width:0%;background:var(--blue);transition:width .4s"></div></div>
+              </div>
+              <button class="btn btn-primary" onclick="generateBackup()" id="backup-btn">💾 Generate Backup</button>
+              <div id="backup-result" style="display:none;margin-top:12px;padding:10px;background:var(--green-dim);border-radius:var(--radius-sm);border:1px solid var(--green)">
+                <div style="font-size:12px;font-weight:700;color:var(--green)">✅ Backup Complete!</div>
+                <div style="font-size:11px;color:var(--text2);margin-top:4px">File: <b style="color:var(--text)" id="backup-filename">backup_sharma_2025-06-11.json</b></div>
+                <div style="font-size:11px;color:var(--text2);margin-top:2px">Sent to: <b style="color:var(--text)" id="backup-email-sent">rajesh@sharma.com</b></div>
+                <button class="btn btn-success btn-sm" style="margin-top:8px" onclick="downloadBackup()">⬇️ Download JSON</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">🔄 Restore / Recovery</div>
+              <p style="font-size:12px;color:var(--text2);margin-bottom:14px">Upload a previously exported JSON backup file to restore all app data exactly as it was.</p>
+              <div id="restore-steps">
+                <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">
+                  <div style="width:24px;height:24px;background:var(--blue-dim);color:var(--blue);border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0">1</div>
+                  <div style="font-size:12px;color:var(--text2)">Select your backup JSON file below</div>
+                </div>
+                <div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start">
+                  <div style="width:24px;height:24px;background:var(--blue-dim);color:var(--blue);border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0">2</div>
+                  <div style="font-size:12px;color:var(--text2)">System validates and previews data</div>
+                </div>
+                <div style="display:flex;gap:10px;margin-bottom:16px;align-items:flex-start">
+                  <div style="width:24px;height:24px;background:var(--blue-dim);color:var(--blue);border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0">3</div>
+                  <div style="font-size:12px;color:var(--text2)">Confirm restore — all data replaced</div>
+                </div>
+              </div>
+              <div class="upload-area" onclick="uploadBackupFile()" id="restore-upload-area">
+                <div class="upload-icon">📂</div>
+                <div class="upload-text">Upload backup JSON file</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:4px">backup_sharma_YYYY-MM-DD.json</div>
+              </div>
+              <div id="restore-preview" style="display:none;margin-top:12px;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border)">
+                <div style="font-size:12px;font-weight:700;margin-bottom:8px">📋 Backup Preview</div>
+                <div id="restore-preview-content"></div>
+                <div style="display:flex;gap:8px;margin-top:10px">
+                  <button class="btn btn-success" onclick="confirmRestore()">✅ Confirm Restore</button>
+                  <button class="btn btn-ghost btn-sm" onclick="cancelRestore()">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backup history -->
+          <div class="card" style="margin-top:16px;max-width:720px">
+            <div class="card-title">📚 Backup History</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Date & Time</th><th>File Name</th><th>Size</th><th>Sent To</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="backup-history-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+      </div><!-- /page-settings -->
+
+
+      <!-- ══════════ INVENTORY & MATERIALS ══════════ -->
+      <div class="page" id="page-inventory">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Inventory & Materials</span></div>
+        <div class="page-header">
+          <div><h2>🏭 Inventory & Materials</h2><p>Manage stock across all godowns and sites</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-material-transfer')">🔄 Transfer</button>
+            <button class="btn btn-primary" onclick="openModal('modal-add-material')">+ Add Stock</button>
+          </div>
+        </div>
+        <div class="stats-grid" id="inv-stats"></div>
+        <div class="tabs" id="inv-tabs" style="margin-top:16px">
+          <button class="tab-btn active" onclick="switchTab('inv-tabs','inv-tab-stock',this)">📦 Stock Overview</button>
+          <button class="tab-btn" onclick="switchTab('inv-tabs','inv-tab-godown',this)">🏗️ Godown / Warehouse</button>
+          <button class="tab-btn" onclick="switchTab('inv-tabs','inv-tab-transfers',this)">🔄 Transfers Log</button>
+          <button class="tab-btn" onclick="switchTab('inv-tabs','inv-tab-valuation',this)">💰 Valuation</button>
+        </div>
+        <div class="tab-pane active" id="inv-tab-stock">
+          <div class="card">
+            <div class="card-title">Site-wise Material Stock</div>
+            <div class="search-row">
+              <input class="search-inp" placeholder="🔍 Search material...">
+              <select class="filter-sel"><option>All Sites</option><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Godown</option></select>
+              <select class="filter-sel"><option>All Materials</option><option>Cement</option><option>Steel</option><option>Sand</option><option>Bricks</option></select>
+            </div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Material</th><th>Primary Unit</th><th>Stock</th><th>Secondary Unit</th><th>Stock (Sec)</th><th>Location</th><th>Site</th><th>Value</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="inv-stock-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div class="tab-pane" id="inv-tab-godown">
+          <div class="grid-auto" id="godown-cards"></div>
+        </div>
+        <div class="tab-pane" id="inv-tab-transfers">
+          <div class="card">
+            <div class="card-title">Material Transfer Log</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Date</th><th>Material</th><th>Qty</th><th>From</th><th>To</th><th>Reason</th><th>Emergency</th><th>By</th></tr></thead>
+              <tbody id="inv-transfer-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div class="tab-pane" id="inv-tab-valuation">
+          <div class="stats-grid" id="inv-val-stats"></div>
+          <div class="card" style="margin-top:16px">
+            <div class="card-title">Site-wise Material Consumption vs Requirement</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Site</th><th>Material</th><th>Required</th><th>Consumed</th><th>Balance</th><th>Value</th><th>Status</th></tr></thead>
+              <tbody id="inv-val-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ REVENUE & PARTNERS ══════════ -->
+      <div class="page" id="page-revenue">
+        <div class="breadcrumb"><span>Home</span><span class="sep">/</span><span class="current">Revenue & Partners</span></div>
+        <div class="page-header">
+          <div><h2>📈 Revenue & Partner Share</h2><p>Track sales, funds, and partner contributions</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="openModal('modal-add-partner')">👥 Add Partner</button>
+            <button class="btn btn-primary" onclick="openModal('modal-add-unit-sale')">+ Record Sale</button>
+          </div>
+        </div>
+        <div class="stats-grid" id="rev-stats"></div>
+        <div class="tabs" id="rev-tabs" style="margin-top:16px">
+          <button class="tab-btn active" onclick="switchTab('rev-tabs','rev-tab-units',this)">🏠 Units Sold</button>
+          <button class="tab-btn" onclick="switchTab('rev-tabs','rev-tab-partners',this)">🤝 Partner Share</button>
+          <button class="tab-btn" onclick="switchTab('rev-tabs','rev-tab-funds',this)">💰 Fund Tracking</button>
+          <button class="tab-btn" onclick="switchTab('rev-tabs','rev-tab-expenses',this)">💸 Expense Split</button>
+        </div>
+        <div class="tab-pane active" id="rev-tab-units">
+          <div class="card">
+            <div class="card-title">Units / Flats Sold</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Unit No</th><th>Site</th><th>Type</th><th>Area (sqft)</th><th>Rate/sqft</th><th>Total Value</th><th>Buyer</th><th>Status</th><th>Revenue</th></tr></thead>
+              <tbody id="rev-units-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div class="tab-pane" id="rev-tab-partners">
+          <div class="grid-auto" id="partner-cards"></div>
+        </div>
+        <div class="tab-pane" id="rev-tab-funds">
+          <div class="card">
+            <div class="card-title">Government / Client Fund Tracking</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Site</th><th>Site Type</th><th>Total Funds</th><th>Received</th><th>Pending</th><th>Last Receipt</th><th>Status</th></tr></thead>
+              <tbody id="rev-funds-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+        <div class="tab-pane" id="rev-tab-expenses">
+          <div class="card">
+            <div class="card-title">Partner Expense Contributions</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Partner</th><th>Site</th><th>Agreed Share</th><th>Contributed</th><th>Pending</th><th>% Complete</th></tr></thead>
+              <tbody id="rev-exp-table"></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- NOTIFICATION PANEL -->
+<div class="slide-panel" id="notif-panel">
+  <div class="slide-panel-header">
+    <h3>🔔 Notifications</h3>
+    <span style="cursor:pointer;color:var(--text2);font-size:18px" onclick="closeNotifPanel()">✕</span>
+  </div>
+  <div id="notif-panel-list"></div>
+</div>
+
+
+<!-- ADD MATERIAL -->
+<div class="modal-overlay" id="modal-add-material">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>📦 Add Stock / Material</h3><button class="modal-close" onclick="closeModal('modal-add-material')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Material Name *</label><input id="mat-name" placeholder="Cement / Steel / Sand"></div>
+        <div class="form-group"><label>Category</label><select><option>Cement</option><option>Steel</option><option>Sand</option><option>Bricks</option><option>Aggregate</option><option>Paint</option><option>Wood</option><option>Other</option></select></div>
+        <div class="form-group"><label>Primary Unit</label><select id="mat-unit1"><option>Bags</option><option>Tons</option><option>Pieces</option><option>Liters</option><option>Cubic Meter</option></select></div>
+        <div class="form-group"><label>Quantity (Primary) *</label><input id="mat-qty1" type="number" placeholder="100"></div>
+        <div class="form-group"><label>Secondary Unit</label><select id="mat-unit2"><option>Kg</option><option>Sq Ft</option><option>Meters</option><option>Grams</option></select></div>
+        <div class="form-group"><label>Quantity (Secondary)</label><input id="mat-qty2" type="number" placeholder="5000"></div>
+        <div class="form-group"><label>Rate per Unit (₹)</label><input id="mat-rate" type="number" placeholder="380"></div>
+        <div class="form-group"><label>Location</label><input id="mat-loc" placeholder="Pune Hadapsar Godown"></div>
+        <div class="form-group"><label>Assign to Site</label><select id="mat-site"><option>Main Godown</option><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Site C – Hinjewadi</option><option>Site D – Kothrud</option></select></div>
+        <div class="form-group"><label>Supplier</label><input placeholder="Supplier name"></div>
+        <div class="form-group"><label>Purchase Date</label><input type="date"></div>
+        <div class="form-group"><label>Minimum Stock Alert</label><input type="number" placeholder="20"></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div class="upload-area" onclick="showToast('Bill uploaded!','success')"><div class="upload-icon">🧾</div><div class="upload-text">Upload Purchase Bill</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-material')">Cancel</button>
+      <button class="btn btn-primary" onclick="addMaterial()">Add to Inventory</button>
+    </div>
+  </div>
+</div>
+
+<!-- MATERIAL TRANSFER -->
+<div class="modal-overlay" id="modal-material-transfer">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>🔄 Material Transfer</h3><button class="modal-close" onclick="closeModal('modal-material-transfer')">✕</button></div>
+    <div class="modal-body">
+      <div style="margin-bottom:14px">
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <button class="btn btn-primary btn-sm" id="transfer-type-normal" onclick="setTransferType('normal')">Normal Transfer</button>
+          <button class="btn btn-danger btn-sm" id="transfer-type-emergency" onclick="setTransferType('emergency')">⚠️ Emergency Transfer</button>
+        </div>
+        <div id="emergency-banner" style="display:none;background:var(--red-dim);border:1px solid var(--red);border-radius:var(--radius-sm);padding:10px;font-size:12px;color:var(--red);margin-bottom:10px">
+          ⚠️ Emergency transfer will be flagged and notified to Admin immediately.
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label>Material *</label><select id="transfer-mat"><option>Cement (OPC 53)</option><option>Steel (TMT 12mm)</option><option>Sand (River)</option><option>Bricks</option></select></div>
+        <div class="form-group"><label>Quantity *</label><input id="transfer-qty" type="number" placeholder="50"></div>
+        <div class="form-group"><label>Unit</label><select><option>Bags</option><option>Tons</option><option>Pieces</option></select></div>
+        <div class="form-group"><label>From *</label><select id="transfer-from"><option>Main Godown</option><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Site C – Hinjewadi</option></select></div>
+        <div class="form-group"><label>To *</label><select id="transfer-to"><option>Site B – Wakad</option><option>Site A – MG Road</option><option>Site C – Hinjewadi</option><option>Site D – Kothrud</option></select></div>
+        <div class="form-group"><label>Transfer Date</label><input type="date"></div>
+        <div class="form-group"><label>Transport Vehicle</label><input placeholder="MH12 AB 1234"></div>
+        <div class="form-group"><label>Driver Name</label><input placeholder="Driver name"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Reason / Notes *</label><textarea id="transfer-reason" placeholder="Reason for transfer..."></textarea></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div class="upload-area" onclick="showToast('Delivery note uploaded!','success')"><div class="upload-icon">📋</div><div class="upload-text">Upload Delivery Challan / Photo</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-material-transfer')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMaterialTransfer()">Confirm Transfer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PARTNER -->
+<div class="modal-overlay" id="modal-add-partner">
+  <div class="modal">
+    <div class="modal-header"><h3>🤝 Add Partner</h3><button class="modal-close" onclick="closeModal('modal-add-partner')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Partner Name *</label><input id="partner-name" placeholder="Shri Ramesh Builders"></div>
+        <div class="form-group"><label>Partner Type</label><select><option>Individual</option><option>Company</option><option>Investor</option></select></div>
+        <div class="form-group"><label>Site / Project</label><select><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Site C – Hinjewadi</option></select></div>
+        <div class="form-group"><label>Share Type</label><select id="partner-share-type" onchange="togglePartnerShare()"><option>Percentage</option><option>Fixed Amount</option></select></div>
+        <div class="form-group" id="partner-pct-group"><label>Share Percentage (%)</label><input id="partner-pct" type="number" placeholder="30" max="100"></div>
+        <div class="form-group" id="partner-fixed-group" style="display:none"><label>Fixed Amount (₹)</label><input id="partner-fixed" type="number" placeholder="5000000"></div>
+        <div class="form-group"><label>Sq Meter / Sq Ft Allocation</label><input type="number" placeholder="1200"></div>
+        <div class="form-group"><label>Unit</label><select><option>Sq Ft</option><option>Sq Meter</option></select></div>
+        <div class="form-group"><label>Mobile</label><input placeholder="9876543210"></div>
+        <div class="form-group"><label>PAN No</label><input placeholder="ABCDE1234F"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Agreement Notes</label><textarea placeholder="Partnership terms..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-partner')">Cancel</button>
+      <button class="btn btn-primary" onclick="addPartner()">Add Partner</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECORD SALE -->
+<div class="modal-overlay" id="modal-add-unit-sale">
+  <div class="modal">
+    <div class="modal-header"><h3>🏠 Record Unit Sale</h3><button class="modal-close" onclick="closeModal('modal-add-unit-sale')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Unit / Flat No *</label><input placeholder="A-101"></div>
+        <div class="form-group"><label>Site</label><select><option>Site A – MG Road</option><option>Site B – Wakad</option></select></div>
+        <div class="form-group"><label>Unit Type</label><select><option>1 BHK</option><option>2 BHK</option><option>3 BHK</option><option>Commercial</option><option>Duplex</option></select></div>
+        <div class="form-group"><label>Area (Sq Ft)</label><input type="number" placeholder="850"></div>
+        <div class="form-group"><label>Rate / Sq Ft (₹)</label><input type="number" placeholder="5800"></div>
+        <div class="form-group"><label>Total Value (₹)</label><input type="number" placeholder="4930000" id="sale-total"></div>
+        <div class="form-group"><label>Buyer Name</label><input placeholder="Buyer full name"></div>
+        <div class="form-group"><label>Sale Date</label><input type="date"></div>
+        <div class="form-group"><label>Payment Status</label><select><option>Booking Amount</option><option>Partial</option><option>Full Payment</option></select></div>
+        <div class="form-group"><label>Amount Received (₹)</label><input type="number" placeholder="500000"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-unit-sale')">Cancel</button>
+      <button class="btn btn-primary" onclick="recordSale()">Record Sale</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOSS TRACKING -->
+<div class="modal-overlay" id="modal-add-loss">
+  <div class="modal">
+    <div class="modal-header"><h3>⚠️ Log Site Loss / Damage</h3><button class="modal-close" onclick="closeModal('modal-add-loss')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Loss Type</label><select><option>Structural Damage</option><option>Material Damage</option><option>Equipment Loss</option><option>Theft</option><option>Natural Disaster</option></select></div>
+        <div class="form-group"><label>Site</label><select><option>Site A – MG Road</option><option>Site B – Wakad</option></select></div>
+        <div class="form-group"><label>Incident Date</label><input type="date"></div>
+        <div class="form-group"><label>Estimated Cost (₹)</label><input type="number" placeholder="50000"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Description</label><textarea placeholder="Describe the loss/damage in detail..."></textarea></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div class="upload-area" onclick="showToast('Images uploaded!','success')"><div class="upload-icon">📸</div><div class="upload-text">Upload Damage Photos (Multiple)</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-loss')">Cancel</button>
+      <button class="btn btn-danger" onclick="closeModal('modal-add-loss');showToast('Loss entry logged!','warning')">Log Loss</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRAP MATERIAL -->
+<div class="modal-overlay" id="modal-add-scrap">
+  <div class="modal">
+    <div class="modal-header"><h3>🗑️ Add Scrap / Damaged Material</h3><button class="modal-close" onclick="closeModal('modal-add-scrap')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Material</label><select><option>Cement (Damaged)</option><option>Steel (Bent)</option><option>Bricks (Broken)</option><option>Wood (Damaged)</option></select></div>
+        <div class="form-group"><label>Quantity</label><input type="number" placeholder="25"></div>
+        <div class="form-group"><label>Condition</label><select><option>Partially Damaged (50%)</option><option>Heavily Damaged (20%)</option><option>Total Loss (0%)</option></select></div>
+        <div class="form-group"><label>Original Unit Rate (₹)</label><input type="number" placeholder="380"></div>
+        <div class="form-group"><label>Scrap Value (₹)</label><input id="scrap-val" type="number" placeholder="Auto-calculated" readonly style="background:var(--bg3);color:var(--green)"></div>
+        <div class="form-group"><label>Refund / Return</label><select><option>Sell as Scrap</option><option>Return to Supplier</option><option>Dispose</option></select></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div class="upload-area" onclick="showToast('Photos uploaded!','success')"><div class="upload-icon">📸</div><div class="upload-text">Upload Scrap Photos</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-scrap')">Cancel</button>
+      <button class="btn btn-warning" onclick="closeModal('modal-add-scrap');showToast('Scrap entry recorded!','warning')">Record Scrap</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMERGENCY BUTTON PANEL -->
+<div class="modal-overlay" id="modal-emergency">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header" style="background:var(--red-dim);border-bottom:1px solid var(--red)">
+      <h3 style="color:var(--red)">🚨 Emergency Quick Call</h3>
+      <button class="modal-close" onclick="closeModal('modal-emergency')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Quick-dial emergency services or send SOS alert to Admin.</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn" style="background:var(--red);color:#fff;font-size:15px;padding:14px;justify-content:center" onclick="emergencyCall('Ambulance','108')">🚑 Ambulance — 108</button>
+        <button class="btn" style="background:#1565C0;color:#fff;font-size:15px;padding:14px;justify-content:center" onclick="emergencyCall('Police','100')">👮 Police — 100</button>
+        <button class="btn" style="background:#E65100;color:#fff;font-size:15px;padding:14px;justify-content:center" onclick="emergencyCall('Fire Brigade','101')">🚒 Fire Brigade — 101</button>
+        <button class="btn" style="background:var(--orange);color:#fff;font-size:15px;padding:14px;justify-content:center" onclick="emergencyCall('Admin SOS','Admin')">📲 SOS to Admin</button>
+      </div>
+      <div style="margin-top:14px;font-size:11px;color:var(--text3);text-align:center">Location will be shared automatically with admin on SOS.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DAILY WORK REPORT MODAL -->
+<div class="modal-overlay" id="modal-daily-report">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>📋 Submit Daily Work Report</h3><button class="modal-close" onclick="closeModal('modal-daily-report')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Site</label><select><option>Site A – MG Road</option><option>Site B – Wakad</option></select></div>
+        <div class="form-group"><label>Date</label><input type="date"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Work Summary *</label><textarea placeholder="Describe today's work in detail..."></textarea></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Milestone / Progress Update</label><input placeholder="e.g. Foundation complete – Block A"></div>
+        <div class="form-group"><label>Completion % Today</label><input type="number" placeholder="65" min="0" max="100"></div>
+        <div class="form-group"><label>Workers Present</label><input type="number" placeholder="12"></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div class="upload-area" onclick="showToast('Photos uploaded!','success')"><div class="upload-icon">📸</div><div class="upload-text">Upload Site Photos (Multiple allowed)</div></div>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Issues / Concerns</label><textarea placeholder="Any issues, delays, or safety concerns..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-daily-report')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitDailyReport()">Submit Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- ADD EMPLOYEE -->
+<div class="modal-overlay" id="modal-add-employee">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>➕ Add New Employee</h3><button class="modal-close" onclick="closeModal('modal-add-employee')">✕</button></div>
+    <div class="modal-body">
+      <div class="tabs" id="emp-form-tabs">
+        <button class="tab-btn active" onclick="switchTab('emp-form-tabs','etab-personal',this)">Personal</button>
+        <button class="tab-btn" onclick="switchTab('emp-form-tabs','etab-employ',this)">Employment</button>
+        <button class="tab-btn" onclick="switchTab('emp-form-tabs','etab-shift',this)">Shift & Site</button>
+        <button class="tab-btn" onclick="switchTab('emp-form-tabs','etab-bank',this)">Bank</button>
+      </div>
+      <div class="tab-pane active" id="etab-personal">
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name *</label><input id="nef-name" placeholder="Ramesh Kumar"></div>
+          <div class="form-group"><label>Mobile Number *</label><input id="nef-phone" placeholder="9876543210"></div>
+          <div class="form-group"><label>Date of Birth</label><input type="date" id="nef-dob"></div>
+          <div class="form-group"><label>Gender</label><select><option>Male</option><option>Female</option><option>Other</option></select></div>
+          <div class="form-group"><label>Aadhar No</label><input placeholder="XXXX XXXX XXXX"></div>
+          <div class="form-group"><label>PAN No</label><input placeholder="ABCDE1234F"></div>
+          <div class="form-group" style="grid-column:1/-1"><label>Address</label><textarea placeholder="Full address..."></textarea></div>
+        </div>
+      </div>
+      <div class="tab-pane" id="etab-employ">
+        <div class="form-grid">
+          <div class="form-group"><label>Employee Type</label><select id="nef-type"><option>Regular</option><option>Contractual</option><option>Daily Wage</option><option>Project Based</option><option>Statutory</option></select></div>
+          <div class="form-group"><label>Role</label><select id="nef-role"><option>Staff</option><option>Senior Staff</option><option>Manager</option></select></div>
+          <div class="form-group"><label>Department</label><select id="nef-dept"><option>Construction</option><option>Security</option><option>Housekeeping</option><option>Admin</option></select></div>
+          <div class="form-group"><label>Designation</label><input id="nef-desig" placeholder="Site Supervisor"></div>
+          <div class="form-group"><label>Basic Salary (₹)</label><input id="nef-salary" type="number" placeholder="15000"></div>
+          <div class="form-group"><label>Pay Cycle</label><select><option>Monthly</option><option>Weekly</option><option>Daily</option></select></div>
+          <div class="form-group"><label>Joining Date</label><input type="date"></div>
+          <div class="form-group"><label>Contract End Date</label><input type="date"></div>
+        </div>
+      </div>
+      <div class="tab-pane" id="etab-shift">
+        <div class="form-grid">
+          <div class="form-group"><label>Shift Name</label><input placeholder="Morning Shift"></div>
+          <div class="form-group"><label>Shift Start</label><input type="time" value="08:00"></div>
+          <div class="form-group"><label>Shift End</label><input type="time" value="17:00"></div>
+          <div class="form-group"><label>Week-Off Day</label><select><option>Sunday</option><option>Saturday</option><option>None</option></select></div>
+          <div class="form-group"><label>Assign to Site</label><select id="nef-site"><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Site C – Hinjewadi</option><option>Site D – Kothrud</option></select></div>
+          <div class="form-group"><label>Auto-Assignment</label><select><option>Enabled</option><option>Disabled</option></select></div>
+        </div>
+      </div>
+      <div class="tab-pane" id="etab-bank">
+        <div class="form-grid">
+          <div class="form-group"><label>Bank Name</label><input placeholder="SBI / HDFC / ICICI"></div>
+          <div class="form-group"><label>Account Number</label><input placeholder="Account number"></div>
+          <div class="form-group"><label>IFSC Code</label><input placeholder="SBIN0001234"></div>
+          <div class="form-group"><label>Account Holder Name</label><input placeholder="Name as per bank"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-employee')">Cancel</button>
+      <button class="btn btn-primary" onclick="addEmployee()">Add Employee</button>
+    </div>
+  </div>
+</div>
+
+<!-- QR GENERATOR WITH LAT/LNG -->
+<div class="modal-overlay" id="modal-qr-generator">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>📲 Generate Attendance QR</h3><button class="modal-close" onclick="closeModal('modal-qr-generator')">✕</button></div>
+    <div class="modal-body">
+      <div class="grid-2" style="gap:16px">
+        <div>
+          <div class="form-grid" style="margin-bottom:16px">
+            <div class="form-group"><label>Site</label><select id="qr-site"><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Site C – Hinjewadi</option></select></div>
+            <div class="form-group"><label>Valid From</label><input type="date" id="qr-from"></div>
+            <div class="form-group"><label>Valid Until</label><input type="date" id="qr-to"></div>
+            <div class="form-group"><label>Time Window Start</label><input type="time" value="08:00"></div>
+            <div class="form-group"><label>Time Window End</label><input type="time" value="10:00"></div>
+            <div class="form-group"><label>Location Radius (m)</label><input type="number" id="qr-radius" value="100" placeholder="0 = disabled"></div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px">
+            <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px">📍 Site GPS Location</div>
+            <div class="form-grid">
+              <div class="form-group"><label>Latitude</label><input type="number" id="qr-lat" placeholder="18.5204" step="0.0001" value="18.5204"></div>
+              <div class="form-group"><label>Longitude</label><input type="number" id="qr-lng" placeholder="73.8567" step="0.0001" value="73.8567"></div>
+            </div>
+            <!-- Mini map mockup -->
+            <div id="map-preview" style="width:100%;height:120px;background:linear-gradient(135deg,#1a2a1a,#2a3a2a);border-radius:8px;margin-top:8px;position:relative;overflow:hidden;cursor:pointer" onclick="pickLocation()">
+              <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(255,255,255,.04) 20px),repeating-linear-gradient(90deg,transparent,transparent 19px,rgba(255,255,255,.04) 20px)"></div>
+              <div id="map-pin" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:24px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))">📍</div>
+              <div style="position:absolute;bottom:6px;right:8px;font-size:10px;color:rgba(255,255,255,.4)">Click to pick location</div>
+              <div id="qr-radius-circle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;border:2px solid rgba(56,139,253,.5);border-radius:50%;background:rgba(56,139,253,.1)"></div>
+            </div>
+            <div style="font-size:11px;color:var(--text2);margin-top:6px">🛰️ Employees must scan within <b id="radius-label">100m</b> of this location</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+          <div id="qr-placeholder" style="text-align:center;padding:30px;color:var(--text2)">
+            <div style="font-size:48px;margin-bottom:8px">📲</div>
+            <div style="font-size:13px">Configure settings and click Generate QR</div>
+          </div>
+          <div class="qr-box" id="qr-display" style="display:none">
+            <div class="qr-inner"></div>
+          </div>
+          <div id="qr-info" style="display:none;text-align:center;background:var(--bg3);border-radius:8px;padding:12px;width:100%">
+            <div style="font-size:11px;color:var(--text2)">Site: <b id="qr-info-site" style="color:var(--text)">—</b></div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px">Location: <b id="qr-info-loc" style="color:var(--blue)">—</b></div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px">Radius: <b id="qr-info-radius" style="color:var(--green)">—</b></div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px">Valid: <b id="qr-info-valid" style="color:var(--orange)">—</b></div>
+          </div>
+          <div style="display:flex;gap:8px" id="qr-actions" style="display:none">
+            <button class="btn btn-ghost btn-sm" onclick="showToast('QR downloaded as PNG!','success')">⬇️ Download</button>
+            <button class="btn btn-warning btn-sm" onclick="refreshQR()">🔄 Refresh</button>
+            <button class="btn btn-danger btn-sm" onclick="showToast('QR deleted','info')">🗑️ Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-qr-generator')">Close</button>
+      <button class="btn btn-primary" onclick="generateQR()">📲 Generate QR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANUAL ATTENDANCE -->
+<div class="modal-overlay" id="modal-manual-attendance">
+  <div class="modal">
+    <div class="modal-header"><h3>✏️ Manual Attendance Override</h3><button class="modal-close" onclick="closeModal('modal-manual-attendance')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Employee</label><select><option>Amit Kumar</option><option>Suresh Patel</option><option>Deepak Singh</option></select></div>
+        <div class="form-group"><label>Date</label><input type="date"></div>
+        <div class="form-group"><label>Status</label><select><option>Present</option><option>Absent</option><option>Half Day</option><option>On Duty</option><option>Week Off</option></select></div>
+        <div class="form-group"><label>Check In Time</label><input type="time" value="09:00"></div>
+        <div class="form-group"><label>Check Out Time</label><input type="time" value="18:00"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Reason</label><textarea placeholder="Reason for manual override..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-manual-attendance')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-manual-attendance');showToast('Attendance manually updated','success')">Save Override</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD LEAVE -->
+<div class="modal-overlay" id="modal-add-leave">
+  <div class="modal">
+    <div class="modal-header"><h3>🏖️ Apply Leave</h3><button class="modal-close" onclick="closeModal('modal-add-leave')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group" id="leave-emp-field"><label>Employee</label><select><option>Amit Kumar</option><option>Suresh Patel</option><option>Deepak Singh</option></select></div>
+        <div class="form-group"><label>Leave Type</label><select><option>Casual Leave</option><option>Sick Leave</option><option>Privilege Leave</option><option>Loss of Pay</option></select></div>
+        <div class="form-group"><label>From Date</label><input type="date"></div>
+        <div class="form-group"><label>To Date</label><input type="date"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Reason</label><textarea placeholder="Reason for leave..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-leave')">Cancel</button>
+      <button class="btn btn-primary" onclick="addLeave()">Submit Leave</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESS PAYROLL -->
+<div class="modal-overlay" id="modal-process-payroll">
+  <div class="modal">
+    <div class="modal-header"><h3>⚙️ Process Payroll</h3><button class="modal-close" onclick="closeModal('modal-process-payroll')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Month</label><select><option>June 2025</option><option>May 2025</option></select></div>
+        <div class="form-group"><label>Department</label><select><option>All Departments</option><option>Construction</option><option>Security</option></select></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Deductions</label>
+          <div style="display:flex;gap:12px;margin-top:6px">
+            <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" checked> PF (12%)</label>
+            <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" checked> ESI (1.75%)</label>
+            <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox"> TDS</label>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px;background:var(--bg3)">
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>Gross Payable:</span><b>₹4,48,000</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--red)"><span>Deductions:</span><b>- ₹28,000</b></div>
+        <hr class="divider">
+        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:var(--green)"><span>Net Payroll:</span><b>₹4,20,000</b></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-process-payroll')">Cancel</button>
+      <button class="btn btn-success" onclick="processPayroll()">✅ Confirm & Process</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SITE -->
+<div class="modal-overlay" id="modal-add-site">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>🏗️ Add New Site</h3><button class="modal-close" onclick="closeModal('modal-add-site')">✕</button></div>
+    <div class="modal-body">
+      <div class="tabs" id="site-form-tabs">
+        <button class="tab-btn active" onclick="switchTab('site-form-tabs','stab-basic',this)">Basic Info</button>
+        <button class="tab-btn" onclick="switchTab('site-form-tabs','stab-financial',this)">Financial</button>
+        <button class="tab-btn" onclick="switchTab('site-form-tabs','stab-ownership',this)">Ownership</button>
+        <button class="tab-btn" onclick="switchTab('site-form-tabs','stab-location',this)">Location & GPS</button>
+      </div>
+
+      <!-- BASIC -->
+      <div class="tab-pane active" id="stab-basic">
+        <div class="form-grid">
+          <div class="form-group"><label>Site Name *</label><input id="ns-name" placeholder="Site F – Baner"></div>
+          <div class="form-group"><label>Site Type *</label>
+            <select id="ns-type">
+              <option>Residential</option><option>Commercial</option><option>Industrial</option>
+              <option>Infrastructure</option><option>Renovation</option><option>Mixed Use</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Manager *</label><select id="ns-mgr"><option>Suresh Patel</option><option>Amit Kumar</option></select></div>
+          <div class="form-group"><label>Required Headcount</label><input id="ns-head" type="number" value="10"></div>
+          <div class="form-group"><label>Start Date</label><input type="date"></div>
+          <div class="form-group"><label>Expected End Date</label><input type="date"></div>
+          <div class="form-group"><label>Address *</label><input id="ns-addr" placeholder="Baner, Pune"></div>
+          <div class="form-group"><label>City</label><input value="Pune"></div>
+        </div>
+      </div>
+
+      <!-- FINANCIAL -->
+      <div class="tab-pane" id="stab-financial">
+        <div class="form-grid">
+          <div class="form-group"><label>Total Estimated Cost (₹) *</label><input id="ns-cost" type="number" placeholder="50000000"></div>
+          <div class="form-group"><label>Initial Budget Allocated (₹)</label><input type="number" placeholder="10000000"></div>
+          <div class="form-group"><label>Contract Value (₹)</label><input type="number" placeholder="45000000"></div>
+          <div class="form-group"><label>Currency</label><select><option>INR (₹)</option><option>USD ($)</option></select></div>
+          <div class="form-group"><label>Payment Terms</label><select><option>Milestone-based</option><option>Monthly</option><option>Lump Sum</option></select></div>
+          <div class="form-group"><label>Insurance Coverage (₹)</label><input type="number" placeholder="5000000"></div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--radius);padding:12px;margin-top:8px;font-size:12px;color:var(--text2)">
+          💡 Total estimated cost will be used for KPI tracking and cost-overrun alerts.
+        </div>
+      </div>
+
+      <!-- OWNERSHIP -->
+      <div class="tab-pane" id="stab-ownership">
+        <div class="form-grid">
+          <div class="form-group" style="grid-column:1/-1">
+            <label>Ownership Type *</label>
+            <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm)">
+                <input type="radio" name="ns-ownership" value="government" onchange="toggleOwnership('government')"> 🏛️ Government
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm)">
+                <input type="radio" name="ns-ownership" value="personal" onchange="toggleOwnership('personal')" checked> 👤 Personal
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm)">
+                <input type="radio" name="ns-ownership" value="partnership" onchange="toggleOwnership('partnership')"> 🤝 Partnership
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;padding:8px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm)">
+                <input type="radio" name="ns-ownership" value="client" onchange="toggleOwnership('client')"> 🏢 Client
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal / Government / Client fields -->
+        <div id="ownership-basic-fields" style="margin-top:12px">
+          <div class="form-grid">
+            <div class="form-group"><label>Owner Name / Entity</label><input placeholder="Full name or company"></div>
+            <div class="form-group"><label>Contact Number</label><input placeholder="9876543210"></div>
+          </div>
+        </div>
+
+        <!-- Partnership fields -->
+        <div id="ownership-partner-fields" style="display:none;margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-size:13px;font-weight:700">Partner Details</div>
+            <button class="btn btn-ghost btn-sm" onclick="addPartnerRow()">+ Add Partner</button>
+          </div>
+          <div id="partner-rows">
+            <div class="partner-row" style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:end">
+              <div class="form-group" style="margin:0"><label>Partner Name</label><input placeholder="Ramesh Builders"></div>
+              <div class="form-group" style="margin:0"><label>Share %</label><input type="number" placeholder="50" min="1" max="100" oninput="recalcShares()"></div>
+              <div class="form-group" style="margin:0"><label>Fixed Amt (₹)</label><input type="number" placeholder="Optional"></div>
+              <button class="btn btn-ghost btn-sm" style="height:36px;margin-top:20px" onclick="removePartnerRow(this)">✕</button>
+            </div>
+            <div class="partner-row" style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:end">
+              <div class="form-group" style="margin:0"><label>Partner Name</label><input placeholder="SK Investments"></div>
+              <div class="form-group" style="margin:0"><label>Share %</label><input type="number" placeholder="50" min="1" max="100" oninput="recalcShares()"></div>
+              <div class="form-group" style="margin:0"><label>Fixed Amt (₹)</label><input type="number" placeholder="Optional"></div>
+              <button class="btn btn-ghost btn-sm" style="height:36px;margin-top:20px" onclick="removePartnerRow(this)">✕</button>
+            </div>
+          </div>
+          <div id="share-total-display" style="font-size:12px;color:var(--text2);margin-top:6px">Total share: <b id="share-total" style="color:var(--green)">100%</b></div>
+        </div>
+      </div>
+
+      <!-- LOCATION -->
+      <div class="tab-pane" id="stab-location">
+        <div class="form-grid">
+          <div class="form-group"><label>Latitude</label><input id="ns-lat" type="number" placeholder="18.5204" step="0.0001" value="18.5204"></div>
+          <div class="form-group"><label>Longitude</label><input id="ns-lng" type="number" placeholder="73.8567" step="0.0001" value="73.8567"></div>
+          <div class="form-group"><label>QR Scan Radius (m)</label><input type="number" value="100" placeholder="Radius for attendance QR"></div>
+          <div class="form-group"><label>Nearest Landmark</label><input placeholder="Near SB Road signal"></div>
+        </div>
+        <div style="width:100%;height:130px;background:linear-gradient(135deg,#1a2a1a,#2a3a2a);border-radius:var(--radius);margin-top:10px;position:relative;overflow:hidden;cursor:pointer" onclick="showToast('Location picked!','success')">
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(255,255,255,.04) 20px),repeating-linear-gradient(90deg,transparent,transparent 19px,rgba(255,255,255,.04) 20px)"></div>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);font-size:28px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))">📍</div>
+          <div style="position:absolute;bottom:8px;width:100%;text-align:center;font-size:11px;color:rgba(255,255,255,.4)">Click to pick GPS location on map</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-site')">Cancel</button>
+      <button class="btn btn-primary" onclick="addSite()">Create Site</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TASK -->
+<div class="modal-overlay" id="modal-add-task">
+  <div class="modal">
+    <div class="modal-header"><h3>✅ Assign Task</h3><button class="modal-close" onclick="closeModal('modal-add-task')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group" style="grid-column:1/-1"><label>Task Title *</label><input id="nt-title" placeholder="Complete foundation inspection"></div>
+        <div class="form-group"><label>Assign To</label><select id="nt-emp"><option>Amit Kumar</option><option>Deepak Singh</option><option>Suresh Patel</option></select></div>
+        <div class="form-group"><label>Target Type</label><select id="nt-type"><option>Daily</option><option>Weekly</option><option>Monthly</option><option>Project</option></select></div>
+        <div class="form-group"><label>Site</label><select><option>Site A – MG Road</option><option>Site B – Wakad</option></select></div>
+        <div class="form-group"><label>Priority</label><select id="nt-priority"><option>Medium</option><option>High</option><option>Low</option></select></div>
+        <div class="form-group"><label>Start Date</label><input type="date"></div>
+        <div class="form-group"><label>Due Date</label><input type="date" id="nt-due"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Description</label><textarea id="nt-desc" placeholder="Task details..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-task')">Cancel</button>
+      <button class="btn btn-primary" onclick="addTask()">Assign Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- GIVE FUND / WALLET ALLOCATE -->
+<div class="modal-overlay" id="modal-give-fund">
+  <div class="modal">
+    <div class="modal-header"><h3>💵 Allocate Fund from Wallet</h3><button class="modal-close" onclick="closeModal('modal-give-fund')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Allocate To</label><select><option>Amit Kumar (Manager)</option><option>Suresh Patel (Manager)</option><option>Deepak Singh (Staff)</option></select></div>
+        <div class="form-group"><label>Amount (₹)</label><input type="number" id="gf-amount" placeholder="10000"></div>
+        <div class="form-group"><label>Date</label><input type="date"></div>
+        <div class="form-group"><label>Payment Mode</label><select id="gf-mode" onchange="toggleChequeFields()"><option>Cash</option><option>UPI</option><option>Cheque</option><option>Bank Transfer</option></select></div>
+        <div class="form-group" id="gf-ref-group" style="display:none"><label>Reference No</label><input placeholder="UTR / Cheque No"></div>
+        <div class="form-group" id="gf-cheque-date" style="display:none"><label>Cheque Withdrawal Date</label><input type="date"></div>
+        <div class="form-group"><label>Bank</label><select><option>SBI – 4521</option><option>HDFC – 7832</option></select></div>
+        <div class="form-group"><label>Purpose</label><input placeholder="Site materials, salary advance..."></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Attach Bill / Proof (optional)</label>
+          <div class="upload-area" onclick="showToast('File uploaded!','success')"><div class="upload-icon">📎</div><div class="upload-text">Click to upload image / PDF</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-give-fund')">Cancel</button>
+      <button class="btn btn-primary" onclick="giveFund()">Allocate Fund</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EXPENSE -->
+<div class="modal-overlay" id="modal-add-expense">
+  <div class="modal">
+    <div class="modal-header"><h3>💸 Add Expense</h3><button class="modal-close" onclick="closeModal('modal-add-expense')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Expense By</label><select><option>Amit Kumar</option><option>Suresh Patel</option></select></div>
+        <div class="form-group"><label>Category</label><select><option>Materials</option><option>Salary</option><option>Transport</option><option>Fuel</option><option>Food</option><option>Tools</option><option>Other</option></select></div>
+        <div class="form-group"><label>Amount (₹)</label><input type="number" placeholder="5000"></div>
+        <div class="form-group"><label>Date</label><input type="date"></div>
+        <div class="form-group"><label>Payment Mode</label><select><option>Cash</option><option>UPI</option><option>Cheque</option><option>Bank Transfer</option></select></div>
+        <div class="form-group"><label>Site</label><select><option>Site A – MG Road</option><option>Site B – Wakad</option></select></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Description</label><textarea placeholder="What was this expense for?"></textarea></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Bill Photo *</label>
+          <div class="upload-area" onclick="showToast('Bill uploaded!','success')"><div class="upload-icon">🧾</div><div class="upload-text">Upload bill / receipt photo</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-expense')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-add-expense');showToast('Expense recorded. Bill saved.','success')">Save Expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD BANK -->
+<div class="modal-overlay" id="modal-add-bank">
+  <div class="modal">
+    <div class="modal-header"><h3>🏦 Add Bank Account</h3><button class="modal-close" onclick="closeModal('modal-add-bank')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Bank Name</label><input placeholder="SBI / HDFC / ICICI"></div>
+        <div class="form-group"><label>Account Number</label><input placeholder="Account number"></div>
+        <div class="form-group"><label>IFSC Code</label><input placeholder="SBIN0001234"></div>
+        <div class="form-group"><label>Opening Balance (₹)</label><input type="number" placeholder="100000"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-bank')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-add-bank');showToast('Bank account added!','success')">Add Bank</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TRANSACTION -->
+<div class="modal-overlay" id="modal-add-transaction">
+  <div class="modal">
+    <div class="modal-header"><h3>💳 Add Transaction</h3><button class="modal-close" onclick="closeModal('modal-add-transaction')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Transaction Type</label><select><option>Payment (Debit)</option><option>Collection (Credit)</option></select></div>
+        <div class="form-group"><label>Bank</label><select><option>SBI – 4521</option><option>HDFC – 7832</option></select></div>
+        <div class="form-group"><label>Party / Recipient</label><input placeholder="Name of person or company"></div>
+        <div class="form-group"><label>Amount (₹)</label><input type="number" placeholder="50000"></div>
+        <div class="form-group"><label>Payment Mode</label><select><option>Cash</option><option>UPI</option><option>Cheque</option><option>NEFT</option><option>RTGS</option></select></div>
+        <div class="form-group"><label>Date</label><input type="date"></div>
+        <div class="form-group"><label>Reference No</label><input placeholder="UTR / Cheque No"></div>
+        <div class="form-group"><label>Cheque Withdrawal Date</label><input type="date"></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div class="upload-area" onclick="showToast('Proof uploaded!','success')"><div class="upload-icon">📎</div><div class="upload-text">Attach transaction proof</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-transaction')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-add-transaction');showToast('Transaction recorded!','success')">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD ASSET -->
+<div class="modal-overlay" id="modal-add-asset">
+  <div class="modal">
+    <div class="modal-header"><h3>📦 Add Company Asset</h3><button class="modal-close" onclick="closeModal('modal-add-asset')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Asset Name *</label><input placeholder="Drilling Machine"></div>
+        <div class="form-group"><label>Category</label><select><option>Equipment</option><option>Furniture</option><option>Vehicle</option><option>Electronics</option><option>Tools</option></select></div>
+        <div class="form-group"><label>Purchase Date</label><input type="date"></div>
+        <div class="form-group"><label>Purchase Value (₹)</label><input type="number" placeholder="25000"></div>
+        <div class="form-group"><label>Assign To (Employee)</label><select><option>Amit Kumar</option><option>Deepak Singh</option><option>Unassigned</option></select></div>
+        <div class="form-group"><label>Assign To (Site)</label><select><option>Site A – MG Road</option><option>Site B – Wakad</option></select></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div class="upload-area" onclick="showToast('Bill uploaded!','success')"><div class="upload-icon">🧾</div><div class="upload-text">Upload purchase bill *</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-asset')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-add-asset');showToast('Asset added to registry!','success')">Add Asset</button>
+    </div>
+  </div>
+</div>
+
+<!-- REIMBURSEMENT -->
+<div class="modal-overlay" id="modal-reimburse">
+  <div class="modal">
+    <div class="modal-header"><h3>💰 Reimbursement Request</h3><button class="modal-close" onclick="closeModal('modal-reimburse')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Employee</label><select><option>Amit Kumar</option><option>Deepak Singh</option></select></div>
+        <div class="form-group"><label>Item Purchased</label><input placeholder="Cement bags, tools..."></div>
+        <div class="form-group"><label>Amount (₹)</label><input type="number" placeholder="3500"></div>
+        <div class="form-group"><label>Purchase Date</label><input type="date"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Reason</label><textarea placeholder="What was bought and why?"></textarea></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <div class="upload-area" onclick="showToast('Bill uploaded!','success')"><div class="upload-icon">📸</div><div class="upload-text">Upload bill / receipt photo *</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reimburse')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-reimburse');showToast('Reimbursement submitted. Approver notified.','success')">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ON DUTY -->
+<div class="modal-overlay" id="modal-add-onduty">
+  <div class="modal">
+    <div class="modal-header"><h3>🚗 Add On-Duty</h3><button class="modal-close" onclick="closeModal('modal-add-onduty')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Employee</label><select><option>Amit Kumar</option><option>Deepak Singh</option></select></div>
+        <div class="form-group"><label>From Date</label><input type="date"></div>
+        <div class="form-group"><label>To Date</label><input type="date"></div>
+        <div class="form-group"><label>Location / Purpose</label><input placeholder="Client site, Govt office..."></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Reason</label><textarea placeholder="Reason for on-duty..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-onduty')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-add-onduty');showToast('On-Duty added!','success')">Add On-Duty</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPLOAD DOCUMENT -->
+<div class="modal-overlay" id="modal-upload-doc">
+  <div class="modal">
+    <div class="modal-header"><h3>📁 Upload Site Document</h3><button class="modal-close" onclick="closeModal('modal-upload-doc')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Document Name *</label><input id="doc-name" placeholder="Labour Contract – Site A"></div>
+        <div class="form-group"><label>Document Type</label><select id="doc-type"><option>Contract</option><option>Agreement</option><option>Permit</option><option>Drawing</option><option>Invoice</option><option>Safety Certificate</option><option>Other</option></select></div>
+        <div class="form-group"><label>Site</label><select id="doc-site"><option>Site A – MG Road</option><option>Site B – Wakad</option><option>Site C – Hinjewadi</option><option>Site D – Kothrud</option><option>Site E – Baner</option><option>All Sites</option></select></div>
+        <div class="form-group"><label>Valid Until</label><input type="date" id="doc-expiry"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Description</label><textarea placeholder="Document details / notes..."></textarea></div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Upload File *</label>
+          <div class="upload-area" onclick="showToast('Document uploaded!','success')"><div class="upload-icon">📄</div><div class="upload-text">Click to upload PDF / Image / Word document</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-upload-doc')">Cancel</button>
+      <button class="btn btn-primary" onclick="uploadDoc()">Upload Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- ANNOUNCE -->
+<div class="modal-overlay" id="modal-announce">
+  <div class="modal">
+    <div class="modal-header"><h3>📢 Send Announcement</h3><button class="modal-close" onclick="closeModal('modal-announce')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label>Send To</label><select><option>All Employees</option><option>Construction Team</option><option>Security Team</option><option>Managers Only</option></select></div>
+        <div class="form-group"><label>Channel</label><select><option>In-App + Push</option><option>In-App Only</option><option>WhatsApp</option><option>SMS</option></select></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Title</label><input placeholder="Announcement title..."></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Message</label><textarea placeholder="Write your announcement here..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-announce')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-announce');showToast('Announcement sent to all employees!','success')">📤 Send Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO REPORT VIEWER -->
+<div class="modal-overlay" id="modal-report-view">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="report-view-title">📋 Report Preview</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-ghost btn-sm" onclick="showToast('PDF downloaded!','success')">📄 PDF</button>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Excel exported!','success')">📊 Excel</button>
+        <button class="modal-close" onclick="closeModal('modal-report-view')">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" id="report-view-body"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
